@@ -15,7 +15,12 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	err = godotenv.Load(cwd + "/.env")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
