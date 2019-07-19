@@ -10,7 +10,6 @@ import (
 )
 
 func getServer(options *Options) *fasthttp.Server {
-	proxyHttpClient := &fasthttp.Client{}
 	proxyPathPattern := regexp.MustCompile(`^\/` + options.cleanUrlSection)
 
 	requestHandler := func(ctx *fasthttp.RequestCtx) {
@@ -19,7 +18,6 @@ func getServer(options *Options) *fasthttp.Server {
 		if proxyPathPattern.MatchString(proxyPath) {
 			proxyRequestHandler(
 				ctx,
-				proxyHttpClient,
 				options,
 				proxyPathPattern.ReplaceAllString(proxyPath, ``),
 			)
@@ -44,7 +42,7 @@ func getServer(options *Options) *fasthttp.Server {
 	return server
 }
 
-func proxyRequestHandler(ctx *fasthttp.RequestCtx, proxyHttpClient *fasthttp.Client, options *Options, proxyPath string) {
+func proxyRequestHandler(ctx *fasthttp.RequestCtx, options *Options, proxyPath string) {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 	res := fasthttp.AcquireResponse()
@@ -58,7 +56,7 @@ func proxyRequestHandler(ctx *fasthttp.RequestCtx, proxyHttpClient *fasthttp.Cli
 		req.Header.Set(headerName, headerValue)
 	}
 
-	if err := proxyHttpClient.Do(req, res); err != nil {
+	if err := fasthttp.Do(req, res); err != nil {
 		ctx.Error(err.Error(), 500)
 	}
 
