@@ -72,7 +72,7 @@ Only one argument is **required**: `--url` (or `LCP_GO_URL` if you prefer env va
 | --host          | -h        | 0.0.0.0                           | localhost |
 | --urlSection    | -s        | through                           |     proxy |
 | --serverLogging | -l        | true                              |     false |
-| --headers       |           | {"X-Requested-With": "Corsyusha"} |        {} |
+| --headers       |           | {"X-Requested-With": "lcp-go"}    |        {} |
 
 ### Environment variables
 
@@ -83,7 +83,7 @@ Only one argument is **required**: `--url` (or `LCP_GO_URL` if you prefer env va
 | LCP_GO_HOST           | 0.0.0.0                              | localhost |
 | LCP_GO_URL_SECTION    | through                              |     proxy |
 | LCP_GO_SERVER_LOGGING | true                                 |     false |
-| LCP_GO_HEADERS        | {"X-Requested-With": "Corsyusha"}    |        {} |
+| LCP_GO_HEADERS        | {"X-Requested-With": "lcp-go"}       |        {} |
 
 ---
 
