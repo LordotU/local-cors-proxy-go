@@ -60,7 +60,14 @@ func proxyRequestHandler(ctx *fasthttp.RequestCtx, options *Options, proxyPath s
 		ctx.Error(err.Error(), 500)
 	}
 
+	res.Header.Set("Vary", "*")
+	res.Header.Set("Access-Control-Allow-Credentials", "true")
+	res.Header.Set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
 	res.Header.Set("Access-Control-Allow-Origin", "*")
+	if ctx.IsOptions() {
+		res.Header.Set("Content-Length", "0")
+		res.SetStatusCode(204)
+	}
 	res.WriteTo(ctx.Conn())
 
 	defer fmt.Printf(
