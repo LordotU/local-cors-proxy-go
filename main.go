@@ -67,8 +67,12 @@ func waitingForGracefulShutdown(server *fasthttp.Server) {
 		),
 	)
 
-	_, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
-	server.Shutdown()
+	go func() {
+		server.Shutdown()
+		defer cancel()
+	}()
+
+	<-ctx.Done()
 }
