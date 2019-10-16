@@ -9,55 +9,55 @@ import (
 	"strconv"
 )
 
-type Options struct {
+type options struct {
 	url             string
-	cleanUrl        string
+	cleanURL        string
 	port            uint64
 	host            string
 	urlSection      string
-	cleanUrlSection string
+	cleanURLSection string
 	serverLogging   bool
 	headers         string
 	parsedHeaders   map[string]string
 	addr            string
 }
 
-func getOptions() (*Options, error) {
-	options := Options{}
+func getOptions() (*options, error) {
+	o := options{}
 
 	envPort, _ := strconv.ParseUint(os.Getenv("LCP_GO_PORT"), 10, 16)
 	envServerLogging, _ := strconv.ParseBool(os.Getenv("LCP_GO_SERVER_LOGGING"))
 
-	flag.StringVar(&options.url, "url", os.Getenv("LCP_GO_URL"), "")
-	flag.StringVar(&options.url, "u", os.Getenv("LCP_GO_URL"), "")
+	flag.StringVar(&o.url, "url", os.Getenv("LCP_GO_URL"), "")
+	flag.StringVar(&o.url, "u", os.Getenv("LCP_GO_URL"), "")
 
-	flag.Uint64Var(&options.port, "port", envPort, "")
-	flag.Uint64Var(&options.port, "p", envPort, "")
+	flag.Uint64Var(&o.port, "port", envPort, "")
+	flag.Uint64Var(&o.port, "p", envPort, "")
 
-	flag.StringVar(&options.host, "host", os.Getenv("LCP_GO_HOST"), "")
-	flag.StringVar(&options.host, "h", os.Getenv("LCP_GO_HOST"), "")
+	flag.StringVar(&o.host, "host", os.Getenv("LCP_GO_HOST"), "")
+	flag.StringVar(&o.host, "h", os.Getenv("LCP_GO_HOST"), "")
 
-	flag.StringVar(&options.urlSection, "urlSection", os.Getenv("LCP_GO_URL_SECTION"), "")
-	flag.StringVar(&options.urlSection, "s", os.Getenv("LCP_GO_URL_SECTION"), "")
+	flag.StringVar(&o.urlSection, "urlSection", os.Getenv("LCP_GO_URL_SECTION"), "")
+	flag.StringVar(&o.urlSection, "s", os.Getenv("LCP_GO_URL_SECTION"), "")
 
-	flag.BoolVar(&options.serverLogging, "serverLogging", envServerLogging, "")
-	flag.BoolVar(&options.serverLogging, "l", envServerLogging, "")
+	flag.BoolVar(&o.serverLogging, "serverLogging", envServerLogging, "")
+	flag.BoolVar(&o.serverLogging, "l", envServerLogging, "")
 
-	flag.StringVar(&options.headers, "headers", os.Getenv("LCP_GO_HEADERS"), "")
+	flag.StringVar(&o.headers, "headers", os.Getenv("LCP_GO_HEADERS"), "")
 
 	flag.Parse()
 
-	if options.url == "" {
-		return nil, errors.New("--url is required!")
+	if o.url == "" {
+		return nil, errors.New("--url is required")
 	}
 
-	if err := json.Unmarshal([]byte(options.headers), &options.parsedHeaders); err != nil {
-		return nil, errors.New("--headers is unmarshalled structure!")
+	if err := json.Unmarshal([]byte(o.headers), &o.parsedHeaders); err != nil {
+		return nil, errors.New("--headers is unmarshalled structure")
 	}
 
-	options.cleanUrl = regexp.MustCompile(`\/+$`).ReplaceAllString(options.url, ``)
-	options.cleanUrlSection = regexp.MustCompile(`^\/+|\/+$`).ReplaceAllString(options.urlSection, ``)
-	options.addr = options.host + ":" + strconv.FormatUint(options.port, 10)
+	o.cleanURL = regexp.MustCompile(`\/+$`).ReplaceAllString(o.url, ``)
+	o.cleanURLSection = regexp.MustCompile(`^\/+|\/+$`).ReplaceAllString(o.urlSection, ``)
+	o.addr = o.host + ":" + strconv.FormatUint(o.port, 10)
 
-	return &options, nil
+	return &o, nil
 }

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	. "github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora"
 	"github.com/valyala/fasthttp"
 )
 
@@ -33,23 +33,23 @@ func main() {
 	server := getServer(options)
 
 	fmt.Print("\n")
-	fmt.Println(Black(" Local Cors Proxy Go ").Bold().Underline().BgWhite())
+	fmt.Println(aurora.Black(" Local Cors Proxy Go ").Bold().Underline().BgWhite())
 	fmt.Print("\n")
-	fmt.Printf(Sprintf(Blue("Proxy url: %v\n"), Green(options.cleanUrl)))
-	fmt.Printf(Sprintf(Blue("Proxy url section: %v\n"), Green(options.cleanUrlSection)))
-	fmt.Printf(Sprintf(Blue("Proxy port: %v\n"), Green(options.port)))
+	fmt.Printf(aurora.Sprintf(aurora.Blue("Proxy url: %v\n"), aurora.Green(options.cleanURL)))
+	fmt.Printf(aurora.Sprintf(aurora.Blue("Proxy url section: %v\n"), aurora.Green(options.cleanURLSection)))
+	fmt.Printf(aurora.Sprintf(aurora.Blue("Proxy port: %v\n"), aurora.Green(options.port)))
 	fmt.Print("\n")
 	fmt.Printf(
-		Sprintf(
-			Cyan("To start using the proxy simply replace the proxied section of your url with: %s"),
-			Sprintf(
-				Yellow("http://%v/%v").Bold(),
+		aurora.Sprintf(
+			aurora.Cyan("To start using the proxy simply replace the proxied section of your url with: %s"),
+			aurora.Sprintf(
+				aurora.Yellow("http://%v/%v").Bold(),
 				options.addr,
-				options.cleanUrlSection,
+				options.cleanURLSection,
 			),
 		),
 	)
-	fmt.Println("\n")
+	fmt.Print("\n")
 
 	waitingForGracefulShutdown(server)
 }
@@ -60,9 +60,10 @@ func waitingForGracefulShutdown(server *fasthttp.Server) {
 
 	interruptReason := <-interruptChan
 
+	fmt.Print("\n")
 	fmt.Println(
-		Sprintf(
-			Red("Shutting down cause %v..\n"),
+		aurora.Sprintf(
+			aurora.Red("Shutting down cause %v..\n"),
 			interruptReason,
 		),
 	)

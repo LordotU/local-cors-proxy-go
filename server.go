@@ -5,12 +5,12 @@ import (
 	"log"
 	"regexp"
 
-	. "github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora"
 	"github.com/valyala/fasthttp"
 )
 
-func getServer(options *Options) *fasthttp.Server {
-	proxyPathPattern := regexp.MustCompile(`^\/` + options.cleanUrlSection)
+func getServer(o *options) *fasthttp.Server {
+	proxyPathPattern := regexp.MustCompile(`^\/` + o.cleanURLSection)
 
 	requestHandler := func(ctx *fasthttp.RequestCtx) {
 		proxyPath := string(ctx.Path())
@@ -18,7 +18,7 @@ func getServer(options *Options) *fasthttp.Server {
 		if proxyPathPattern.MatchString(proxyPath) {
 			proxyRequestHandler(
 				ctx,
-				options,
+				o,
 				proxyPathPattern.ReplaceAllString(proxyPath, ``),
 			)
 		} else {
@@ -31,28 +31,28 @@ func getServer(options *Options) *fasthttp.Server {
 	}
 
 	go func() {
-		err := server.ListenAndServe(options.addr)
+		err := server.ListenAndServe(o.addr)
 		if err != nil {
 			log.Fatal(err)
 		} else {
-			fmt.Println(Red("Shutted down!\n").Bold())
+			fmt.Println(aurora.Red("Shutted down!\n").Bold())
 		}
 	}()
 
 	return server
 }
 
-func proxyRequestHandler(ctx *fasthttp.RequestCtx, options *Options, proxyPath string) {
+func proxyRequestHandler(ctx *fasthttp.RequestCtx, o *options, proxyPath string) {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 	res := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(res)
 
-	proxiedUri := options.cleanUrl + proxyPath
+	proxiedURI := o.cleanURL + proxyPath
 
 	ctx.Request.CopyTo(req)
-	req.SetRequestURI(proxiedUri)
-	for headerName, headerValue := range options.parsedHeaders {
+	req.SetRequestURI(proxiedURI)
+	for headerName, headerValue := range o.parsedHeaders {
 		req.Header.Set(headerName, headerValue)
 	}
 
@@ -76,15 +76,15 @@ func proxyRequestHandler(ctx *fasthttp.RequestCtx, options *Options, proxyPath s
 	res.WriteTo(ctx.Conn())
 
 	defer fmt.Printf(
-		Sprintf(
+		aurora.Sprintf(
 			"%s %s %s %s %s %s %d\n",
-			Magenta(ctx.Method()),
-			Blue("request proxied:"),
-			Green(ctx.RequestURI()),
-			Blue("->"),
-			Green(proxiedUri),
-			Blue("with status code"),
-			White(res.StatusCode()),
+			aurora.Magenta(ctx.Method()),
+			aurora.Blue("request proxied:"),
+			aurora.Green(ctx.RequestURI()),
+			aurora.Blue("->"),
+			aurora.Green(proxiedURI),
+			aurora.Blue("with status code"),
+			aurora.White(res.StatusCode()),
 		),
 	)
 }
