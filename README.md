@@ -1,6 +1,6 @@
 # Local Cors Proxy Go
 
-[![License](https://img.shields.io/badge/License-MIT-000000.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-MIT-000000.svg)](https://opensource.org/licenses/MIT) [![Go Report Card](https://goreportcard.com/badge/github.com/LordotU/local-cors-proxy-go)](https://goreportcard.com/report/github.com/LordotU/local-cors-proxy-go)
 
 ## Description
 
