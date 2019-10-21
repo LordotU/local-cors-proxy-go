@@ -11,14 +11,16 @@ import (
 
 type options struct {
 	url             string
-	cleanURL        string
 	port            uint64
 	host            string
 	urlSection      string
-	cleanURLSection string
 	serverLogging   bool
 	headers         string
+	origin          string
+	reflectOrigin   bool
 	parsedHeaders   map[string]string
+	cleanURL        string
+	cleanURLSection string
 	addr            string
 }
 
@@ -27,6 +29,8 @@ func getOptions() (*options, error) {
 
 	envPort, _ := strconv.ParseUint(os.Getenv("LCP_GO_PORT"), 10, 16)
 	envServerLogging, _ := strconv.ParseBool(os.Getenv("LCP_GO_SERVER_LOGGING"))
+	envOrigin := os.Getenv("LCP_ORIGIN")
+	envReflectOrigin, _ := strconv.ParseBool(os.Getenv("LCP_REFLECT_ORIGIN"))
 
 	flag.StringVar(&o.url, "url", os.Getenv("LCP_GO_URL"), "")
 	flag.StringVar(&o.url, "u", os.Getenv("LCP_GO_URL"), "")
@@ -44,6 +48,12 @@ func getOptions() (*options, error) {
 	flag.BoolVar(&o.serverLogging, "l", envServerLogging, "")
 
 	flag.StringVar(&o.headers, "headers", os.Getenv("LCP_GO_HEADERS"), "")
+
+	flag.StringVar(&o.origin, "origin", envOrigin, "")
+	flag.StringVar(&o.origin, "o", envOrigin, "")
+
+	flag.BoolVar(&o.reflectOrigin, "reflectOrigin", envReflectOrigin, "")
+	flag.BoolVar(&o.reflectOrigin, "r", envReflectOrigin, "")
 
 	flag.Parse()
 

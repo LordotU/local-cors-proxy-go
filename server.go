@@ -60,10 +60,20 @@ func proxyRequestHandler(ctx *fasthttp.RequestCtx, o *options, proxyPath string)
 		ctx.Error(err.Error(), 500)
 	}
 
-	res.Header.Set("Vary", "*")
-	res.Header.Set("Access-Control-Allow-Credentials", "true")
 	res.Header.Set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
-	res.Header.Set("Access-Control-Allow-Origin", "*")
+	res.Header.Set("Access-Control-Allow-Credentials", "true")
+
+	if o.reflectOrigin {
+		res.Header.Set("Access-Control-Allow-Origin", string(ctx.Request.Header.Peek("Origin")))
+		res.Header.Set("Vary", "Origin")
+	} else if o.origin != "" {
+		res.Header.Set("Access-Control-Allow-Origin", o.origin)
+		res.Header.Set("Vary", "Origin")
+	} else {
+		res.Header.Set("Access-Control-Allow-Origin", "*")
+		res.Header.Set("Vary", "*")
+	}
+
 	if ctx.IsOptions() {
 		accessControlRequestHeaders := string(ctx.Request.Header.Peek("Access-Control-Request-Headers"))
 		if accessControlRequestHeaders != "" {
